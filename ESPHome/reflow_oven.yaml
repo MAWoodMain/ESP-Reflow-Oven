@@ -1,0 +1,420 @@
+esphome:
+  name: reflow_oven
+  platform: ESP32
+  board: esp-wrover-kit
+
+wifi:
+  # Configure home wifi settings here
+  ssid: "WIFI SSID HERE"
+  password: "WIFI PASSWORD HERE"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Reflow Oven Fallback Hotspot"
+    password: "FALLBACK PASSWORD HERE"
+
+captive_portal:
+
+uart:
+  id: nextion_uart
+  rx_pin: GPIO22
+  tx_pin: GPIO23
+  baud_rate: 9600
+
+spi:
+  miso_pin: GPIO19
+  mosi_pin: GPIO14
+  clk_pin: GPIO18
+
+globals:
+  # Keep track of what page the nextion dispaly is showing
+  - id: nextion_page
+    type: int
+    initial_value: '0'
+
+binary_sensor:
+  - platform: nextion
+    page_id: 0
+    component_id: 3
+    id: manual_button
+    on_press:
+      then:
+        - logger.log:
+            format: "MANUAL PRESSED"
+        - globals.set:
+            id: nextion_page
+            value: '2'
+  - platform: nextion
+    page_id: 0
+    component_id: 5
+    id: cycle_button
+    on_press:
+      then:
+        - logger.log:
+            format: "CYCLE PRESSED"
+  # This button runs a custom script on homeassistant that produces a reflow cycles
+        - homeassistant.service:
+            service: script.1610815555029
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 0
+    component_id: 4
+    id: stop_button
+    on_press:
+      then:
+        - logger.log:
+            format: "STOP PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "OFF"
+            target_temperature: 0°C
+        - climate.control:
+            id: bot_pid
+            mode: "OFF"
+            target_temperature: 0°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 12
+    id: bot_off_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT OFF PRESSED"
+        - climate.control:
+            id: bot_pid
+            mode: "OFF"
+            target_temperature: 0°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 13
+    id: bot_100_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 150 PRESSED"
+        - climate.control:
+            id: bot_pid
+            mode: "AUTO"
+            target_temperature: 100°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 14
+    id: bot_150_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 150 PRESSED"
+        - climate.control:
+            id: bot_pid
+            mode: "AUTO"
+            target_temperature: 150°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 15
+    id: bot_200_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 200 PRESSED"
+        - climate.control:
+            id: bot_pid
+            mode: "AUTO"
+            target_temperature: 200°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 16
+    id: bot_250_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 250 PRESSED"
+        - climate.control:
+            id: bot_pid
+            mode: "AUTO"
+            target_temperature: 250°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+            
+  - platform: nextion
+    page_id: 2
+    component_id: 7
+    id: top_off_button
+    on_press:
+      then:
+        - logger.log:
+            format: "TOP OFF PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "OFF"
+            target_temperature: 0°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 8
+    id: top_100_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 150 PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "AUTO"
+            target_temperature: 100°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 9
+    id: top_150_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 150 PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "AUTO"
+            target_temperature: 150°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 10
+    id: top_200_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 200 PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "AUTO"
+            target_temperature: 200°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 11
+    id: top_250_button
+    on_press:
+      then:
+        - logger.log:
+            format: "BOT 250 PRESSED"
+        - climate.control:
+            id: top_pid
+            mode: "AUTO"
+            target_temperature: 250°C
+        - globals.set:
+            id: nextion_page
+            value: '0'
+  - platform: nextion
+    page_id: 2
+    component_id: 6
+    id: page_2_back_button
+    name: "PAGE 2 BACK BUTTON PRESSED"
+    on_press:
+      then:
+        - globals.set:
+            id: nextion_page
+            value: '0'
+sensor:
+  - platform: max31855
+    name: "Oven PCB Top TC"
+    id: pcb_top_tc
+    reference_temperature:
+      name: "Oven Top TC CJC"
+      accuracy_decimals: 0
+      filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 3
+    cs_pin: GPIO21
+    update_interval: 2s
+    accuracy_decimals: 0
+    filters:
+    - sliding_window_moving_average:
+        window_size: 5
+        send_every: 3
+    
+  - platform: max31855
+    name: "Oven PCB Bottom TC"
+    id: pcb_bot_tc
+    reference_temperature:
+      name: "Oven Bottom TC CJC"
+      accuracy_decimals: 0
+      filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 3
+    cs_pin: GPIO17
+    update_interval: 2s
+    accuracy_decimals: 0
+    filters:
+    - sliding_window_moving_average:
+        window_size: 5
+        send_every: 3
+    
+  - platform: max31855
+    name: "Oven Back TC"
+    id: pcb_back_tc
+    reference_temperature:
+      name: "Oven Back TC CJC"
+      accuracy_decimals: 0
+      filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 3
+    cs_pin: GPIO16
+    update_interval: 2s
+    accuracy_decimals: 0
+    filters:
+    - sliding_window_moving_average:
+        window_size: 5
+        send_every: 3
+    
+output:
+  - platform: slow_pwm
+    pin: GPIO25
+    id: top_element
+    period: 5s
+    
+  - platform: slow_pwm
+    pin: GPIO26
+    id: bot_element
+    period: 5s
+    
+  - platform: gpio
+    pin: GPIO27
+    id: fan_en
+    
+fan:
+  - platform: binary
+    output: fan_en
+    name: "Cooling Fan"
+    
+climate:
+  - platform: pid
+    id: top_pid
+    name: "PCB Top Side Temperature Control"
+    sensor: pcb_top_tc
+    default_target_temperature: 0°C
+    heat_output: top_element
+    visual:
+      min_temperature: 0 °C
+      max_temperature: 350 °C
+      temperature_step: 5 °C
+    control_parameters:
+  # These values came from the auto tune system
+      kp: 0.07958
+      ki: 0.00121
+      kd: 1.31308
+      
+  - platform: pid
+    id: bot_pid
+    name: "PCB Bottom Side Temperature Control"
+    sensor: pcb_bot_tc
+    default_target_temperature: 0°C
+    heat_output: bot_element
+    visual:
+      min_temperature: 0 °C
+      max_temperature: 350 °C
+      temperature_step: 5 °C
+    control_parameters:
+  # These values came from the auto tune system
+      kp: 0.10913
+      ki: 0.00138
+      kd: 2.16088
+      
+switch:
+  - platform: template
+    name: "Auto Tune Top Element"
+    turn_on_action:
+      - climate.pid.autotune: top_pid
+      
+  - platform: template
+    name: "Auto Tune Bottom Element"
+    turn_on_action:
+      - climate.pid.autotune: bot_pid
+
+display:
+  - platform: nextion
+    update_interval: 1s
+    uart_id: nextion_uart
+    lambda: |-
+      it.set_wait_for_ack(false);
+      if (id(nextion_page) == 0) {
+        it.set_component_value("n2", id(top_pid).current_temperature);
+        it.set_component_value("n3", id(bot_pid).current_temperature);
+        
+        if(id(pcb_top_tc).state < 256 && id(pcb_top_tc).state > 0)
+        {
+          it.add_waveform_data(1,0,id(pcb_top_tc).state);
+        }
+        if(id(pcb_bot_tc).state < 256 && id(pcb_bot_tc).state > 0)
+        {
+          it.add_waveform_data(1,1,id(pcb_bot_tc).state);
+        }
+        if(id(pcb_back_tc).state < 256 && id(pcb_back_tc).state > 0)
+        {
+          it.add_waveform_data(1,2,id(pcb_back_tc).state);
+        }
+        
+        if(id(top_pid).mode == 0)
+        {
+          it.hide_component("n1");
+        }
+        else
+        {
+          it.set_component_value("n1", id(top_pid).target_temperature);
+          it.show_component("n1");
+        }
+        if(id(bot_pid).mode == 0)
+        {
+          it.hide_component("n0");
+        }
+        else
+        {
+          it.set_component_value("n0", id(bot_pid).target_temperature);
+          it.show_component("n0");
+        }
+        if((id(bot_pid).mode == 0)&&(id(top_pid).mode == 0))
+        {
+          it.hide_component("t4");
+        }
+        else
+        {
+          it.show_component("t4");
+        }
+      }
+
+# Enable logging
+logger:
+  baud_rate: 0
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+
+# Enable over the air updating
+ota:

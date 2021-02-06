@@ -1,0 +1,11 @@
+Comment,Designator,Footprint,LCSC Part #
+10uF Unpolarized capacitor,"C1,C2",C_0805_2012Metric,C15850
+"100nF Unpolarized capacitor, small symbol","C3,C4,C5,C6,C7",C_0603_1608Metric,C14663
+696101000002 ,J4,696101000002,
+"AO3401A -4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23","Q1,Q2,Q6",SOT-23,C15127
+"BC847 0.1A Ic, 45V Vce, NPN Transistor, SOT-23","Q3,Q4,Q5",SOT-23,C426568
+"10K Resistor, small symbol","R1,R2,R3,R4,R5,R6,R9,R11,R12,R13",R_0603_1608Metric,C25804
+"1K Resistor, small symbol","R7,R8,R10",R_0603_1608Metric,C21190
+"AMS1117-3.3 1A Low Dropout regulator, positive, 3.3V fixed output, SOT-223",U3,SOT-223-3_TabPin2,C6186
+"ESP32-WROOM-32U RF Module, ESP32-D0WD SoC, Wi-Fi 802.11b/g/n, Bluetooth, BLE, 32-bit, 2.7-3.6V, external antenna, SMD",U4,ESP32-WROOM-32U,C328062
+"MAX31855KASA Cold Junction K-type Termocouple Interface, SPI, SO8","U5,U6,U7",SOIC-8_3.9x4.9mm_P1.27mm,C52028
